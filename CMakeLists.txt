@@ -13,7 +13,7 @@ project(UtilityAI)
 
 add_executable("${PROJECT_NAME}" "Src/Main.cpp")
 
-set(SFML_DIR "${ExternalFolder}/SFML-2.5.1")
+set(SFML_DIR "${ExternalFolder}/SFML")
 add_subdirectory("${SFML_DIR}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
