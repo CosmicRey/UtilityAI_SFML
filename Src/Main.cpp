@@ -24,7 +24,7 @@ public:
 int main(int argc, char** argv)
 {
 	RegisterBlackboardVariable(VariableName);
-	sf::RenderWindow window(sf::VideoMode(), "SFML works!");
+	sf::RenderWindow window(sf::VideoMode(1280, 720), "SFML works!", sf::Style::Close);
 
 	std::unique_ptr<uai::IGameLoop> gameLoop = std::make_unique<UtilityTestScenerio>();
 
@@ -35,6 +35,16 @@ int main(int argc, char** argv)
 
 	while (window.isOpen() && gameLoop->Tick()) 
 	{
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			// "close requested" event: we close the window
+			if (event.type == sf::Event::Closed)
+			{
+				window.close();
+			}
+		}
+
 		window.clear();
 		window.draw(shape);
 		window.display();
@@ -43,4 +53,5 @@ int main(int argc, char** argv)
 	gameLoop->Shutdown();
 
 	std::cout << VariableName.GetString() << "\n";
+	return 0;
 }

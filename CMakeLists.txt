@@ -1,46 +1,18 @@
-cmake_minimum_required(VERSION 3.7)
+option(USE_VCPKG "USE_VCPG" ON)
 
-set(ExternalFolder "${CMAKE_CURRENT_SOURCE_DIR}/External")
+if(USE_VCPKG)
+	include(vcpkg.cmake)
+endif()
 
+set(VCPKG_TARGET_TRIPLET "x64-windows")
 
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-configure_file(UtilityAIConfig.h.in UtilityAIConfig.hpp)
-
 project(UtilityAI)
-
-add_executable("${PROJECT_NAME}" "Src/Main.cpp")
-
-set(SFML_DIR "${ExternalFolder}/SFML")
-add_subdirectory("${SFML_DIR}")
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-
-set(SFML_STATIC_LIBRARIES true)
-
-target_include_directories(${PROJECT_NAME}
-PUBLIC
-${SFML_INCLUDE_DIR}
-)
-
-target_link_libraries(${PROJECT_NAME}
-PUBLIC
-${SFML_LIBRARIES}
-${SFML_DEPENDENCIES}
-)
-
-
-target_include_directories("${PROJECT_NAME}" PUBLIC
-	"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Inc>"
-	"$<INSTALL_INTERFACE:Inc>"
-)
-
-target_include_directories("${PROJECT_NAME}" PRIVATE
-	"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Src>"
-	"$<INSTALL_INTERFACE:Src>"
-)
+configure_file(UtilityAIConfig.h.in UtilityAIConfig.hpp)
+cmake_minimum_required(VERSION 3.7)
 
 file(GLOB_RECURSE PublicFiles 
 	CMAKE_CONFIGURE_DEPENDS 
@@ -55,8 +27,20 @@ file(GLOB_RECURSE PrivateFiles
 	"Src/*.cpp"
 )
 
-#target_link_libraries()
+find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
+find_package(imgui REQUIRED)
+find_package(imgui-sfml REQUIRED)
 
+add_executable("${PROJECT_NAME}" "${PrivateFiles}")
+
+target_include_directories("${PROJECT_NAME}" PUBLIC
+	"${CMAKE_CURRENT_SOURCE_DIR}/Inc"
+)
+target_include_directories("${PROJECT_NAME}" PRIVATE
+	"${CMAKE_CURRENT_SOURCE_DIR}/Src"
+)
+
+target_link_libraries("${PROJECT_NAME}" PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
 target_sources("${PROJECT_NAME}" PUBLIC ${PublicFiles})
 target_sources("${PROJECT_NAME}" PRIVATE ${PrivateFiles})
 

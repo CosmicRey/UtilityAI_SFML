@@ -1,0 +1,10 @@
+{
+    "name": "utilityai",
+    "version-string": "0.1",
+    "supports": "windows & x64 & !static",
+    "dependencies": [
+        "sfml",
+        "imgui",
+        "imgui-sfml"
+    ]
+}
